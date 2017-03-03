@@ -41,30 +41,16 @@ few one in the CNS/SPID assertion (givenName, sn maybe mail).
  
 ## How to plug this flow
 
-Edit file: `./conf/c14n/subject-c14n.xml`; add inside the 
-
-    <util:list id="shibboleth.PostLoginSubjectCanonicalizationFlows">
-    
-(around the head of the file) the following bean (at beginning):
+Edit file: `./conf/c14n/subject-c14n.xml`; add  a section:
  
-    <bean id="c14n/accountlinking" 
-      parent="shibboleth.PostLoginSubjectCanonicalizationFlow" >
-        <property name="activationCondition"
-                  ref="shibboleth.usernameIsACF" />
-     </bean>
+     <util:list id="shibboleth.AccountLinkingCanonicalizationFlows">
+             <bean id="c14n/accountlinking" 
+             parent="shibboleth.PostLoginSubjectCanonicalizationFlow" />             
+     </util:list>
 
-The activation conditions are:
+On the `beans` of the authentication flows that shall use this c14n flow, modify to:  
 
-    <bean id="shibboleth.usernameIsACF" parent="shibboleth.Conditions.SubjectName">
-       <constructor-arg>
-          <bean class="com.google.common.base.Predicates" 
-                factory-method="containsPattern"
-                c:pattern="^[A-Z0-9]{16}$" />
-       </constructor-arg>
-    </bean>
+     <bean id="PopulateSubjectCanonicalizationContext"
+        class="net.shibboleth.idp.authn.impl.PopulateSubjectCanonicalizationContext" scope="prototype"
+        p:availableFlows-ref="shibboleth.AccountLinkingCanonicalizationFlows" />
 
-    <bean id="shibboleth.usernameIsNotACF" parent="shibboleth.Conditions.NOT">
-        <constructor-arg>
-          <ref bean="shibboleth.usernameIsACF" />          
-        </constructor-arg>
-    </bean>
