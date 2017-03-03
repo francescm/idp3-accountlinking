@@ -16,7 +16,7 @@ principal the Italian taxpayer number (codice fiscale).
 
 The codice fiscale can be shared by more than a LDAP identity. 
 For instance the same person can have a teaching position and 
-an acdemic role (e.g. dean of a faculty).
+an academic role (e.g. dean of a faculty).
 
 We need a step to allow user to choose the account to use as 
 a principal to forward to attribute resolver.
@@ -38,3 +38,7 @@ few one in the CNS/SPID assertion (givenName, sn maybe mail).
  
  
  [1] http://www.agid.gov.it/agenda-digitale/infrastrutture-architetture/spid
+ 
+## How to plug this flow
+
+
