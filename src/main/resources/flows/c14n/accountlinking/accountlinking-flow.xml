@@ -1,0 +1,72 @@
+<flow xmlns="http://www.springframework.org/schema/webflow"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation="http://www.springframework.org/schema/webflow http://www.springframework.org/schema/webflow/spring-webflow.xsd"
+      parent="c14n.abstract">
+
+    <on-start>
+        <evaluate expression="environment" result="flowScope.environment" />
+        <evaluate expression="opensamlProfileRequestContext" result="flowScope.profileRequestContext" />
+        <evaluate expression="opensamlProfileRequestContext.getSubcontext(T(net.shibboleth.idp.authn.context.AuthenticationContext))"
+                  result="flowScope.authenticationContext" />
+    </on-start>
+
+    <!-- Given a CF search Directory for matching uids -->
+    <action-state id="searchUids">
+        <!--
+        <evaluate expression="environment" result="flowScope.environment" />
+        <evaluate expression="opensamlProfileRequestContext" result="flowScope.profileRequestContext" />
+        <evaluate expression="opensamlProfileRequestContext.getSubcontext(T(net.shibboleth.idp.authn.context.AuthenticationContext))"
+                  result="flowScope.authenticationContext" />
+                  -->
+        <evaluate expression="initializeAccountLinking" />
+        <evaluate expression="'proceed'"/>
+        <transition on="proceed" to="branchToALinkingStrategy"/>
+    </action-state>
+
+
+    <!-- given a AccountLinkingUserContext (set by initializeAccountLinking) decide where to branch -->
+    <action-state id="branchToALinkingStrategy">
+        <evaluate expression="validateUsernamesArity"/>
+        <transition on="no_match" to="proceed"/>
+        <transition on="one_match" to="proceed"/>
+        <transition on="many_match" to="displayUidForm"/>
+    </action-state>
+
+    <!-- Display form to choose uids from -->
+    <view-state id="displayUidForm" view="uidform">
+        <on-entry>
+            <evaluate expression="T(net.shibboleth.utilities.java.support.codec.HTMLEncoder)" result="viewScope.encoder" />
+            <evaluate expression="flowRequestContext.getExternalContext().getNativeRequest()" result="viewScope.request" />
+            <evaluate expression="flowRequestContext.getExternalContext().getNativeResponse()" result="viewScope.response" />
+            <evaluate
+                    expression="flowRequestContext.getActiveFlow().getApplicationContext().containsBean('shibboleth.CustomViewContext') ? flowRequestContext.getActiveFlow().getApplicationContext().getBean('shibboleth.CustomViewContext') : null"
+                    result="viewScope.custom" />
+        </on-entry>
+
+        <transition on="proceed" to="processUidForm" />
+    </view-state>
+
+    <!-- Perform form processing -->
+    <action-state id="processUidForm">
+        <evaluate expression="processUidForm"/>
+        <evaluate expression="'proceed'"/>
+        <transition on="proceed" to="validateChoosenUid" />
+        <!-- Show uid form page on non-true validation result -->
+        <transition to="displayUidForm" />
+    </action-state>
+
+    <!-- populate subject as chosen on the form -->
+    <action-state id="validateChoosenUid">
+        <evaluate expression="validateChoosenUid" />
+        <!-- Proceed on successful authentication -->
+        <evaluate expression="'proceed'"/>
+        <!-- Show uid form page on non-true validation result -->
+        <transition on="AccountError" to="displayUidForm"/>
+        <transition on="InvalidCredentials" to="displayUidForm"/>
+        <transition on="NoCredentials" to="displayUidForm" />
+        <transition on="proceed" to="proceed" />
+    </action-state>
+
+    <bean-import resource="accountlinking-beans.xml" />
+
+</flow>
