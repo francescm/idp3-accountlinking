@@ -48,7 +48,7 @@ Edit file: `./conf/c14n/subject-c14n.xml`; add inside the
 (around the head of the file) the following bean (at beginning):
  
     <bean id="c14n/accountlinking" 
-      parent="shibboleth.PostLoginSubjectCanonicalizationFlow" />
+      parent="shibboleth.PostLoginSubjectCanonicalizationFlow" >
         <property name="activationCondition"
                   ref="shibboleth.usernameIsACF" />
      </bean>
