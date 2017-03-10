@@ -23,6 +23,8 @@ import net.shibboleth.idp.authn.AuthenticationResult
 import net.shibboleth.idp.authn.principal.UsernamePrincipal
 import javax.security.auth.Subject
 import java.security.Principal
+import net.shibboleth.idp.authn.context.SubjectCanonicalizationContext
+
 
 
 import static org.junit.Assert.assertEquals
@@ -44,7 +46,7 @@ import org.powermock.core.classloader.annotations.PrepareForTest
 import org.powermock.modules.junit4.PowerMockRunner
 
 @RunWith(PowerMockRunner.class)
-@PrepareForTest(AuthenticationContext.class)
+@PrepareForTest([ProfileRequestContext.class, AuthenticationContext.class])
 class InitializeAccountLinkingTest {
 
 
@@ -60,9 +62,9 @@ class InitializeAccountLinkingTest {
         InitializeAccountLinking initAccountLinking = new InitializeAccountLinking()
         List<String> usernames = ['malvezzi', '146394']
 
-        ProfileRequestContext profileRequestContext = new ProfileRequestContext()
-        AuthenticationContext authenticationContext = PowerMockito.mock(AuthenticationContext.class)
+        ProfileRequestContext profileRequestContext = PowerMockito.mock(ProfileRequestContext.class)
 
+        AuthenticationContext authenticationContext = PowerMockito.mock(AuthenticationContext.class)
 
         //Profile Action InitializeAccountLinking:
         // Entering doExecute with AuthenticationContext{initiationInstant=2017-03-09T15:40:28.690+01:00,
@@ -82,14 +84,22 @@ class InitializeAccountLinkingTest {
         Subject subject = new Subject()
         subject.getPrincipals().add(principal)
 
-        AuthenticationResult authenticationResult = new AuthenticationResult("authn/X509External", subject)
+        SubjectCanonicalizationContext subjectCanonicalizationContext = new SubjectCanonicalizationContext()
+        subjectCanonicalizationContext.setSubject(subject)
+
+        //AuthenticationResult authenticationResult = new AuthenticationResult("authn/X509External", subject)
 
         AccountLinkingUserContext accountLinkingUserContext = new AccountLinkingUserContext()
+
         when(authenticationContext.getSubcontext(AccountLinkingUserContext.class,
                 true))
                 .thenReturn(accountLinkingUserContext)
 
-        when(authenticationContext.getAuthenticationResult()).thenReturn(authenticationResult)
+        //when(authenticationContext.getAuthenticationResult()).thenReturn(authenticationResult)
+
+        when(profileRequestContext.
+                getSubcontext("net.shibboleth.idp.authn.context.SubjectCanonicalizationContext")).
+                thenReturn(subjectCanonicalizationContext)
 
         initAccountLinking.doExecute(profileRequestContext, authenticationContext)
 

@@ -61,15 +61,24 @@ public class InitializeAccountLinking extends AbstractExtractionAction {
             log.debug("{} active result key: {} value: {}", logPrefix, result.key, result.value)
         }
 
-        String taxpayerNumber = ""
+        def principalName = null
+        def subject = profileRequestContext.getSubcontext("net.shibboleth.idp.authn.context.SubjectCanonicalizationContext").getSubject()
+        def princs = subject.getPrincipals(net.shibboleth.idp.authn.principal.UsernamePrincipal.class)
+        if (princs.size() == 1) {
+            principalName = princs.iterator().next().getName()
+        }
+        principalName
+        log.debug("{} Scott assumes taxpayer number is: {}", logPrefix, principalName )
 
+        String taxpayerNumber = principalName
+/*
         AuthenticationResult authenticationResult = authenticationContext.getAuthenticationResult()
         log.debug("{} authentication result: {}", logPrefix, authenticationResult)
         log.debug("{} authentication result subject: {}", logPrefix, authenticationResult.getSubject())
         def principals = authenticationResult.getSubject().getPrincipals(UsernamePrincipal.class)
         log.debug("{} I assume taxpayer number is: {}", logPrefix, principals.toArray().first().getName())
         taxpayerNumber = principals.toArray().first().getName()
-
+*/
         try {
             def uids = ['malvezzi', '146394']
             log.debug("{} uids found: {}", logPrefix, uids)
