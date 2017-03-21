@@ -3,6 +3,7 @@
       xsi:schemaLocation="http://www.springframework.org/schema/webflow http://www.springframework.org/schema/webflow/spring-webflow.xsd"
       parent="c14n.abstract">
 
+
     <on-start>
         <evaluate expression="environment" result="flowScope.environment" />
         <evaluate expression="opensamlProfileRequestContext" result="flowScope.profileRequestContext" />
@@ -10,14 +11,10 @@
                   result="flowScope.authenticationContext" />
     </on-start>
 
-    <!-- Given a CF search Directory for matching uids -->
     <action-state id="searchUids">
-        <!--
-        <evaluate expression="environment" result="flowScope.environment" />
-        <evaluate expression="opensamlProfileRequestContext" result="flowScope.profileRequestContext" />
-        <evaluate expression="opensamlProfileRequestContext.getSubcontext(T(net.shibboleth.idp.authn.context.AuthenticationContext))"
-                  result="flowScope.authenticationContext" />
-                  -->
+        <!-- Given a CF search Directory for matching uids -->
+        <!-- borrowed from AttributePostLoginC14NConfiguration -->
+        <evaluate expression="ResolveAttributes" />
         <evaluate expression="initializeAccountLinking" />
         <evaluate expression="'proceed'"/>
         <transition on="proceed" to="branchToALinkingStrategy"/>

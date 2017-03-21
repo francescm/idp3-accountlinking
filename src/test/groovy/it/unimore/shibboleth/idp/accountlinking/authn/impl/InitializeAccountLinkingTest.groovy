@@ -26,7 +26,6 @@ import java.security.Principal
 import net.shibboleth.idp.authn.context.SubjectCanonicalizationContext
 
 
-
 import static org.junit.Assert.assertEquals
 import static org.junit.Assert.assertFalse
 import static org.junit.Assert.assertTrue

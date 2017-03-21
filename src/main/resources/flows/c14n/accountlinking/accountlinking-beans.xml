@@ -14,9 +14,19 @@
     <bean class="net.shibboleth.ext.spring.config.IdentifiableBeanPostProcessor" />
     <bean class="net.shibboleth.idp.profile.impl.ProfileActionBeanPostProcessor" />
 
-    <!--
-    <import resource="../../../conf/c14n/accountlinking-authn-config.xml" />
-    -->
+    <import resource="../../../conf/c14n/accountlinking-c14n-config.xml" />
+
+    <bean id="ResolveAttributes" class="net.shibboleth.idp.profile.impl.ResolveAttributes" scope="prototype"
+          c:resolverService-ref="shibboleth.AttributeResolverService"
+          p:attributesToResolve-ref="shibboleth.c14n.attribute.AttributesToResolve"
+          p:maskFailures="%{idp.service.attribute.resolver.maskFailures:true}"
+          p:principalNameLookupStrategy="#{getObject('shibboleth.c14n.attribute.PrincipalNameLookupStrategy')}">
+        <property name="attributeContextCreationStrategy">
+            <bean class="com.google.common.base.Functions" factory-method="compose"
+                  c:g-ref="shibboleth.ChildLookupOrCreate.AttributeContext"
+                  c:f-ref="shibboleth.ChildLookup.SubjectCanonicalizationContext" />
+        </property>
+    </bean>
 
     <bean id="initializeAccountLinking"
           scope="prototype"

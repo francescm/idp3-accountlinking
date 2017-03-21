@@ -24,8 +24,7 @@ import net.shibboleth.idp.authn.AbstractExtractionAction
 import net.shibboleth.idp.authn.context.AuthenticationContext
 import net.shibboleth.idp.authn.principal.UsernamePrincipal
 
-
-
+import net.shibboleth.idp.attribute.context.AttributeContext
 
 import net.shibboleth.idp.authn.context.ExternalAuthenticationContext
 
@@ -57,9 +56,19 @@ public class InitializeAccountLinking extends AbstractExtractionAction {
                              @Nonnull final AuthenticationContext authenticationContext) {
         log.debug("{} Entering doExecute with {}", logPrefix, authenticationContext)
 
+        log.debug("{} profileContext: {}", logPrefix, profileRequestContext)
         authenticationContext.activeResults.each { result ->
             log.debug("{} active result key: {} value: {}", logPrefix, result.key, result.value)
         }
+
+        def attributes = authenticationContext.getParent().getFlowScope().get("attributes")
+        log.debug("{} attributes: {}", logPrefix, attributes)
+        /*
+        def attrs = attributeContext.getUnfilteredIdPAttributes()
+        log.debug("{} attributeContext attrs: {}", logPrefix, attrs)
+        def attr_uids = attrs["uid"]
+        log.debug("{} attributeContext uids: {}", attr_uids, attrs)
+        */
 
         def principalName = null
         def subject = profileRequestContext.getSubcontext("net.shibboleth.idp.authn.context.SubjectCanonicalizationContext").getSubject()
@@ -68,7 +77,7 @@ public class InitializeAccountLinking extends AbstractExtractionAction {
             principalName = princs.iterator().next().getName()
         }
         principalName
-        log.debug("{} Scott assumes taxpayer number is: {}", logPrefix, principalName )
+        log.debug("{} taxpayer number is: {}", logPrefix, principalName )
 
         String taxpayerNumber = principalName
 /*
