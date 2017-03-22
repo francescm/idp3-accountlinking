@@ -32,6 +32,7 @@ import net.shibboleth.utilities.java.support.annotation.constraint.NotEmpty
 import net.shibboleth.idp.authn.principal.UsernamePrincipal
 
 import net.shibboleth.idp.authn.context.SubjectCanonicalizationContext
+import net.shibboleth.idp.authn.context.SubjectContext
 
 import javax.security.auth.Subject
 
@@ -63,10 +64,17 @@ class ValidateChoosenUid extends AbstractValidationAction {
 
         log.info("{} itacns login successful", logPrefix)
         buildAuthenticationResult(profileRequestContext, authenticationContext)
+        SubjectContext subjectContext =
+                profileRequestContext.getSubcontext(SubjectContext.class, true)
         SubjectCanonicalizationContext subjectCanonicalizationContext =
                     profileRequestContext.getSubcontext(SubjectCanonicalizationContext.class, true)
+
         log.debug("{} subjectC14nContext subject: {}", logPrefix, subjectCanonicalizationContext.getSubject())
+        log.debug("{} subject subject: {}", logPrefix, subjectContext.getSubjects())
+        log.debug("{} subject principal name: {}", logPrefix, subjectContext.getPrincipalName())
+        subjectContext.setPrincipalName(accountLinkingUserContext.accountLinked)
         subjectCanonicalizationContext.setPrincipalName(accountLinkingUserContext.accountLinked)
+
 
     }
 
