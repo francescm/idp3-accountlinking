@@ -27,6 +27,7 @@ import net.shibboleth.idp.authn.principal.UsernamePrincipal
 import net.shibboleth.idp.attribute.context.AttributeContext
 
 import net.shibboleth.idp.authn.context.ExternalAuthenticationContext
+import net.shibboleth.idp.authn.context.SubjectCanonicalizationContext
 
 import net.shibboleth.idp.authn.AuthenticationResult
 import org.opensaml.profile.context.ProfileRequestContext
@@ -61,8 +62,9 @@ public class InitializeAccountLinking extends AbstractExtractionAction {
             log.debug("{} active result key: {} value: {}", logPrefix, result.key, result.value)
         }
 
-        def attributes = authenticationContext.getParent().getFlowScope().get("attributes")
-        log.debug("{} attributes: {}", logPrefix, attributes)
+        def subContext = profileRequestContext.iterator().next()
+        log.debug("{} profileRequestContext subContext: {}", logPrefix, subContext)
+
         /*
         def attrs = attributeContext.getUnfilteredIdPAttributes()
         log.debug("{} attributeContext attrs: {}", logPrefix, attrs)
@@ -70,8 +72,21 @@ public class InitializeAccountLinking extends AbstractExtractionAction {
         log.debug("{} attributeContext uids: {}", attr_uids, attrs)
         */
 
+        SubjectCanonicalizationContext subjectCanonicalizationContext =
+                profileRequestContext.getSubcontext("net.shibboleth.idp.authn.context.SubjectCanonicalizationContext")
+        log.debug("{} subject c14n context: {}", logPrefix, subjectCanonicalizationContext)
+
+        AttributeContext attributeContext = subjectCanonicalizationContext.getSubcontext(AttributeContext.class)
+        log.debug("{} alleged attributeContext: {}", logPrefix, attributeContext)
+
+        def uid_attrs = attributeContext.getIdPAttributes().get("uid")
+        log.debug("{} alleged uids: {}", logPrefix, uid_attrs)
+
+        def uids = []
+        attributeContext.getIdPAttributes().get("uid").getValues().each { uids << it.getValue() }
+
         def principalName = null
-        def subject = profileRequestContext.getSubcontext("net.shibboleth.idp.authn.context.SubjectCanonicalizationContext").getSubject()
+        def subject = subjectCanonicalizationContext.getSubject()
         def princs = subject.getPrincipals(net.shibboleth.idp.authn.principal.UsernamePrincipal.class)
         if (princs.size() == 1) {
             principalName = princs.iterator().next().getName()
@@ -89,7 +104,6 @@ public class InitializeAccountLinking extends AbstractExtractionAction {
         taxpayerNumber = principals.toArray().first().getName()
 */
         try {
-            def uids = ['malvezzi', '146394']
             log.debug("{} uids found: {}", logPrefix, uids)
             accountLinkingUserContext = authenticationContext.getSubcontext(AccountLinkingUserContext.class, true)
             if (!accountLinkingUserContext.initialized) {

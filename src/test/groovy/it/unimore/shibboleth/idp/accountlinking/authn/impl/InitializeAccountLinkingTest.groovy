@@ -24,6 +24,13 @@ import net.shibboleth.idp.authn.principal.UsernamePrincipal
 import javax.security.auth.Subject
 import java.security.Principal
 import net.shibboleth.idp.authn.context.SubjectCanonicalizationContext
+import net.shibboleth.idp.attribute.context.AttributeContext
+
+import net.shibboleth.idp.attribute.IdPAttribute
+
+
+import net.shibboleth.idp.attribute.StringAttributeValue
+
 
 
 import static org.junit.Assert.assertEquals
@@ -59,7 +66,6 @@ class InitializeAccountLinkingTest {
     @Test
     void testDoExecute()  {
         InitializeAccountLinking initAccountLinking = new InitializeAccountLinking()
-        List<String> usernames = ['malvezzi', '146394']
 
         ProfileRequestContext profileRequestContext = PowerMockito.mock(ProfileRequestContext.class)
 
@@ -77,6 +83,23 @@ class InitializeAccountLinkingTest {
         // lastActivityInstant=2017-03-09T15:41:25.383+01:00, previousResult=false},
         // completionInstant=1970-01-01T01:00:00.000+01:00}
 
+        List<StringAttributeValue> uid_values = [
+                new StringAttributeValue("malvezzi"),
+                new StringAttributeValue("146394")
+        ]
+
+        def usernames_to_validate = []
+        uid_values.each { usernames_to_validate << it.getValue() }
+
+        IdPAttribute uid_attr = new IdPAttribute("uid")
+        uid_attr.setValues(uid_values)
+
+        def attrs = new HashSet<IdPAttribute>()
+        attrs.add(uid_attr)
+
+        AttributeContext attributeContext = new AttributeContext()
+        attributeContext.setIdPAttributes(attrs)
+
         String cf = "CFVOIDTEST"
         Principal principal = new UsernamePrincipal(cf)
 
@@ -85,6 +108,7 @@ class InitializeAccountLinkingTest {
 
         SubjectCanonicalizationContext subjectCanonicalizationContext = new SubjectCanonicalizationContext()
         subjectCanonicalizationContext.setSubject(subject)
+        subjectCanonicalizationContext.addSubcontext(attributeContext, true)
 
         //AuthenticationResult authenticationResult = new AuthenticationResult("authn/X509External", subject)
 
@@ -100,10 +124,15 @@ class InitializeAccountLinkingTest {
                 getSubcontext("net.shibboleth.idp.authn.context.SubjectCanonicalizationContext")).
                 thenReturn(subjectCanonicalizationContext)
 
+        def aList = new ArrayList()
+        aList.add("a element")
+
+        when(profileRequestContext.iterator()).
+                thenReturn(aList.iterator())
+
         initAccountLinking.doExecute(profileRequestContext, authenticationContext)
 
-
-        assertEquals(accountLinkingUserContext.usernames, usernames)
+        assertEquals(accountLinkingUserContext.usernames, usernames_to_validate )
         assertEquals(accountLinkingUserContext.taxpayerNumber, cf)
     }
 
