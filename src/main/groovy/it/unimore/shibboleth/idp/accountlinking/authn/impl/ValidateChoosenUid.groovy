@@ -73,7 +73,12 @@ class ValidateChoosenUid extends AbstractValidationAction {
             log.debug("{} authenticationContext authenticationResults: {}", logPrefix,
                     authenticationContext.getAuthenticationResult())
             subjectContext.setPrincipalName(accountLinkingUserContext.accountLinked)
+        } else {
+            log.warn("{} candidate {} not among allowed usernames {}", logPrefix, accountLinked, usernames)
+            handleError(profileRequestContext, authenticationContext, 'AccountError',
+                    AuthnEventIds.ACCOUNT_ERROR)
         }
+
 
     }
 

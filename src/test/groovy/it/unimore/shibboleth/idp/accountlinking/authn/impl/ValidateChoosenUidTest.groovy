@@ -19,6 +19,11 @@ package it.unimore.shibboleth.idp.accountlinking.authn.impl
 
 import net.shibboleth.idp.authn.context.AuthenticationContext
 import net.shibboleth.idp.authn.context.SubjectCanonicalizationContext
+
+
+import net.shibboleth.idp.authn.context.AuthenticationErrorContext
+
+
 import net.shibboleth.idp.authn.principal.UsernamePrincipal
 import org.opensaml.profile.context.ProfileRequestContext
 import net.shibboleth.idp.authn.context.SubjectContext
@@ -32,6 +37,7 @@ import org.springframework.webflow.execution.Event
 
 import static org.junit.Assert.assertEquals
 import static org.junit.Assert.assertFalse
+import static org.junit.Assert.assertNull
 import static org.junit.Assert.assertTrue
 import static org.mockito.Mockito.when
 
@@ -53,25 +59,24 @@ import javax.security.auth.Subject
 @PrepareForTest(AuthenticationContext.class)
 class ValidateChoosenUidTest {
 
+    def authenticationFlowDescriptor
+    List<String> usernames = ['tizio', 'caio']
+    AccountLinkingUserContext accountLinkingUserContext
 
     @Before
     void setUp() {
-        /*
-
-         */
+        authenticationFlowDescriptor = new AuthenticationFlowDescriptor()
+        authenticationFlowDescriptor.setId("testFlow")
+        accountLinkingUserContext = new AccountLinkingUserContext()
+        accountLinkingUserContext.usernames = usernames
     }
 
     @Test
     void testExecuteWhenUidMatches()  {
 
         def choosenUsername = "tizio"
-        List<String> usernames = ['tizio', 'caio']
-        AccountLinkingUserContext accountLinkingUserContext = new AccountLinkingUserContext()
-        accountLinkingUserContext.usernames = usernames
-        accountLinkingUserContext.accountLinked = choosenUsername
 
-        AuthenticationFlowDescriptor authenticationFlowDescriptor = new AuthenticationFlowDescriptor()
-        authenticationFlowDescriptor.setId("testFlow")
+        accountLinkingUserContext.accountLinked = choosenUsername
 
         AuthenticationContext authenticationContext = PowerMockito.mock(AuthenticationContext.class)
         ProfileRequestContext profileRequestContext = new ProfileRequestContext()
@@ -96,5 +101,31 @@ class ValidateChoosenUidTest {
 
     }
 
+    @Test
+    void testExecuteWhenMisMatch()  {
+
+        def choosenUsername = "sempronio"
+        
+        accountLinkingUserContext.accountLinked = choosenUsername
+
+        AuthenticationContext authenticationContext = PowerMockito.mock(AuthenticationContext.class)
+        ProfileRequestContext profileRequestContext = new ProfileRequestContext()
+
+        when(authenticationContext.getSubcontext(AccountLinkingUserContext.class,
+                true))
+                .thenReturn(accountLinkingUserContext)
+
+        when(authenticationContext.getAttemptedFlow())
+                .thenReturn(authenticationFlowDescriptor)
+
+        ValidateChoosenUid validateChoosenUid = new ValidateChoosenUid()
+        validateChoosenUid.doExecute(profileRequestContext, authenticationContext)
+
+        SubjectCanonicalizationContext subjectCanonicalizationContext =
+                profileRequestContext.getSubcontext(SubjectCanonicalizationContext.class)
+        assertNull(subjectCanonicalizationContext)
+
+
+    }
 
 }
