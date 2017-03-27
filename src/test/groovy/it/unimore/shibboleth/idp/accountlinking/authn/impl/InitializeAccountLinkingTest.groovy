@@ -31,8 +31,6 @@ import net.shibboleth.idp.attribute.IdPAttribute
 
 import net.shibboleth.idp.attribute.StringAttributeValue
 
-
-
 import static org.junit.Assert.assertEquals
 import static org.junit.Assert.assertFalse
 import static org.junit.Assert.assertTrue
@@ -65,6 +63,8 @@ class InitializeAccountLinkingTest {
 
     @Test
     void testDoExecute()  {
+
+
         InitializeAccountLinking initAccountLinking = new InitializeAccountLinking()
 
         ProfileRequestContext profileRequestContext = PowerMockito.mock(ProfileRequestContext.class)
