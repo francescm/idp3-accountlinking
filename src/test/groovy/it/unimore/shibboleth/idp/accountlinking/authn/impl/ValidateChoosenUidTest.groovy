@@ -105,7 +105,7 @@ class ValidateChoosenUidTest {
     void testExecuteWhenMisMatch()  {
 
         def choosenUsername = "sempronio"
-        
+
         accountLinkingUserContext.accountLinked = choosenUsername
 
         AuthenticationContext authenticationContext = PowerMockito.mock(AuthenticationContext.class)
