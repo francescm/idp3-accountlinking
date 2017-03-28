@@ -17,13 +17,14 @@
 
 package it.unimore.shibboleth.idp.accountlinking.authn.impl
 
+import net.shibboleth.idp.attribute.IdPAttribute
+import net.shibboleth.idp.attribute.StringAttributeValue
 import net.shibboleth.idp.authn.context.AuthenticationContext
 import net.shibboleth.idp.authn.context.SubjectCanonicalizationContext
 
 
 import net.shibboleth.idp.authn.context.AuthenticationErrorContext
-
-
+import net.shibboleth.idp.authn.principal.IdPAttributePrincipal
 import net.shibboleth.idp.authn.principal.UsernamePrincipal
 import org.opensaml.profile.context.ProfileRequestContext
 import net.shibboleth.idp.authn.context.SubjectContext
@@ -69,6 +70,7 @@ class ValidateChoosenUidTest {
         authenticationFlowDescriptor.setId("testFlow")
         accountLinkingUserContext = new AccountLinkingUserContext()
         accountLinkingUserContext.usernames = usernames
+        accountLinkingUserContext.taxpayerNumber = "JUSTATESTCF"
     }
 
     @Test
@@ -96,6 +98,12 @@ class ValidateChoosenUidTest {
 
         Subject result = new Subject()
         result.getPrincipals().add(new UsernamePrincipal(choosenUsername))
+
+        IdPAttribute attr = new IdPAttribute("accountlinkingTaxpayer")
+        attr.setValues([new StringAttributeValue(accountLinkingUserContext.taxpayerNumber)])
+        IdPAttributePrincipal taxpayerIdPAttributePrincipal = new IdPAttributePrincipal(attr)
+
+        result.getPrincipals().add(taxpayerIdPAttributePrincipal)
 
         assertEquals(result, subjectCanonicalizationContext.subject)
 

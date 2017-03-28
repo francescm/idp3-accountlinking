@@ -30,6 +30,12 @@ import org.opensaml.profile.context.ProfileRequestContext
 
 import net.shibboleth.utilities.java.support.annotation.constraint.NotEmpty
 import net.shibboleth.idp.authn.principal.UsernamePrincipal
+import net.shibboleth.idp.authn.principal.IdPAttributePrincipal
+
+import net.shibboleth.idp.attribute.IdPAttribute
+import net.shibboleth.idp.attribute.StringAttributeValue
+
+
 
 import net.shibboleth.idp.authn.context.SubjectCanonicalizationContext
 import net.shibboleth.idp.authn.context.SubjectContext
@@ -78,8 +84,6 @@ class ValidateChoosenUid extends AbstractValidationAction {
             handleError(profileRequestContext, authenticationContext, 'AccountError',
                     AuthnEventIds.ACCOUNT_ERROR)
         }
-
-
     }
 
     @Override
@@ -87,11 +91,17 @@ class ValidateChoosenUid extends AbstractValidationAction {
         log.info("{} producing principal: {}", logPrefix, accountLinkingUserContext.accountLinked)
         log.debug("{} subject was: {}", logPrefix, subject)
         log.debug("{} principals were: {}", logPrefix, subject.principals)
+
+        IdPAttribute attr = new IdPAttribute("accountlinkingTaxpayer")
+        attr.setValues([new StringAttributeValue(accountLinkingUserContext.taxpayerNumber)])
+        IdPAttributePrincipal taxpayerIdPAttributePrincipal = new IdPAttributePrincipal(attr)
+
         UsernamePrincipal usernamePrincipal =
                 new UsernamePrincipal(accountLinkingUserContext.accountLinked)
         Subject newSubject = new Subject()
         log.debug("{} about to add: {}", logPrefix, usernamePrincipal)
         newSubject.getPrincipals().add(usernamePrincipal)
+        newSubject.getPrincipals().add(taxpayerIdPAttributePrincipal)
         log.debug("{} principals are now: {}", logPrefix, newSubject.getPrincipals())
         return newSubject
     }
