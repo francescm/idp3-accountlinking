@@ -17,7 +17,6 @@
 
 package it.unimore.shibboleth.idp.accountlinking.authn.impl
 
-import com.sun.istack.internal.NotNull
 import groovy.util.logging.Slf4j
 import it.unimore.shibboleth.idp.accountlinking.authn.impl.AccountLinkingUserContext
 import net.shibboleth.idp.authn.AbstractExtractionAction
@@ -42,7 +41,6 @@ import javax.annotation.Nonnull
 @Slf4j
 public class InitializeAccountLinking extends AbstractExtractionAction {
 
-    @NotNull
     @NotEmpty
     private AccountLinkingUserContext accountLinkingUserContext
 

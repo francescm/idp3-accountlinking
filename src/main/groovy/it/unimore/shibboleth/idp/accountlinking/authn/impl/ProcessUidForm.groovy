@@ -17,7 +17,6 @@
 
 package it.unimore.shibboleth.idp.accountlinking.authn.impl
 
-import com.sun.istack.internal.NotNull
 import groovy.util.logging.Slf4j
 import net.shibboleth.idp.authn.AbstractExtractionAction
 import net.shibboleth.idp.authn.AuthnEventIds
@@ -34,8 +33,6 @@ import net.shibboleth.utilities.java.support.annotation.constraint.NotEmpty
 @Slf4j
 class ProcessUidForm extends AbstractExtractionAction {
 
-
-    @NotNull
     @NotEmpty
     private AccountLinkingUserContext accountLinkingUserContext
 

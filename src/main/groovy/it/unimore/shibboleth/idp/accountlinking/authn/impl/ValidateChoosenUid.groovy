@@ -17,7 +17,6 @@
 
 package it.unimore.shibboleth.idp.accountlinking.authn.impl
 
-import com.sun.istack.internal.NotNull
 import groovy.util.logging.Slf4j
 
 import it.unimore.shibboleth.idp.accountlinking.authn.impl.AccountLinkingUserContext
@@ -45,7 +44,6 @@ import javax.security.auth.Subject
 @Slf4j
 class ValidateChoosenUid extends AbstractValidationAction {
 
-    @NotNull
     @NotEmpty
     private AccountLinkingUserContext accountLinkingUserContext
 
@@ -57,8 +55,8 @@ class ValidateChoosenUid extends AbstractValidationAction {
     }
 
 
-    protected void doExecute(@NotNull ProfileRequestContext profileRequestContext,
-                             @NotNull AuthenticationContext authenticationContext) {
+    protected void doExecute(@NotEmpty ProfileRequestContext profileRequestContext,
+                             @NotEmpty AuthenticationContext authenticationContext) {
 
 
         accountLinkingUserContext = authenticationContext.getSubcontext(AccountLinkingUserContext.class, true)
@@ -87,7 +85,7 @@ class ValidateChoosenUid extends AbstractValidationAction {
     }
 
     @Override
-    protected Subject populateSubject(@NotNull Subject subject) {
+    protected Subject populateSubject(@NotEmpty Subject subject) {
         log.info("{} producing principal: {}", logPrefix, accountLinkingUserContext.accountLinked)
         log.debug("{} subject was: {}", logPrefix, subject)
         log.debug("{} principals were: {}", logPrefix, subject.principals)

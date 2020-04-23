@@ -1,9 +1,9 @@
 <configuration scan="true" scanPeriod="30 seconds">
     <!-- this is good only for test -->
     <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <File>logs/itacns.log</File>
+        <File>logs/accountlinking.log</File>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <FileNamePattern>logs/itacns-%d{yyyy-MM-dd}.log</FileNamePattern>
+            <FileNamePattern>logs/accountlinking-%d{yyyy-MM-dd}.log</FileNamePattern>
             <maxHistory>30</maxHistory>
         </rollingPolicy>
         <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">

@@ -17,7 +17,6 @@
 
 package it.unimore.shibboleth.idp.accountlinking.authn.impl
 
-import com.sun.istack.internal.NotNull
 import groovy.util.logging.Slf4j
 import org.springframework.webflow.execution.Action
 import org.springframework.webflow.execution.Event
@@ -34,7 +33,6 @@ import net.shibboleth.utilities.java.support.annotation.constraint.NotEmpty
 @Slf4j
 class ValidateUsernamesArity implements Action {
 
-    @NotNull
     @NotEmpty
     private AccountLinkingUserContext accountLinkingUserContext
 
