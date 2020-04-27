@@ -50,9 +50,9 @@ class ValidateUsernameArityTest {
     }
 
     @Test
-    void testExecute()  {
+    void testExecuteManyMatches()  {
 
-        List<String> usernames = ['malvezzi', '146394']
+        List<String> usernames = ['johndoe', 'doejohn']
 
         AuthenticationContext authenticationContext = new AuthenticationContext()
         AccountLinkingUserContext accountLinkingUserContext = authenticationContext.getSubcontext(AccountLinkingUserContext.class, true)
@@ -71,5 +71,27 @@ class ValidateUsernameArityTest {
 
     }
 
+
+    @Test
+    void testExecuteOneMatch()  {
+
+        List<String> usernames = ['johndoe']
+
+        AuthenticationContext authenticationContext = new AuthenticationContext()
+        AccountLinkingUserContext accountLinkingUserContext = authenticationContext.getSubcontext(AccountLinkingUserContext.class, true)
+        accountLinkingUserContext.usernames = usernames
+
+        LocalAttributeMap flowScope = new LocalAttributeMap('authenticationContext', authenticationContext)
+
+        RequestContext requestContext = Mockito.mock(RequestContext.class)
+        when(requestContext.getFlowScope()).thenReturn(flowScope)
+
+        ValidateUsernamesArity validateUsernamesArity = new ValidateUsernamesArity()
+
+        Event event = validateUsernamesArity.execute(requestContext)
+
+        assertEquals("one_match", event.id)
+
+    }
 
 }

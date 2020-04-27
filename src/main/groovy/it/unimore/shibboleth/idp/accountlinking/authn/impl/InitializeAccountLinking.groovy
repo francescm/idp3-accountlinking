@@ -45,7 +45,7 @@ public class InitializeAccountLinking extends AbstractExtractionAction {
     private AccountLinkingUserContext accountLinkingUserContext
 
 
-    public InitializeAccountLinking() {
+    InitializeAccountLinking() {
         super()
         log.debug("initializing Account Linking")
     }

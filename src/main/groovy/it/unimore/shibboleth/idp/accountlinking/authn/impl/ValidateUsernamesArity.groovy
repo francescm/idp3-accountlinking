@@ -44,17 +44,29 @@ class ValidateUsernamesArity implements Action {
         log.debug("{} Constructor ValidateUsernamesArity()", logPrefix)
     }
 
-    public Event execute(RequestContext context) {
+    Event execute(RequestContext context) {
 
         AuthenticationContext authenticationContext = context.getFlowScope().get("authenticationContext")
         accountLinkingUserContext = authenticationContext.getSubcontext(AccountLinkingUserContext.class, true)
         def usernames = accountLinkingUserContext.usernames
         log.debug("{} usernames: {}", logPrefix, usernames)
-
-        LocalAttributeMap attrMap = new LocalAttributeMap("username", "malvezzi")
-        Event event = new Event(this, "many_match", attrMap)
-        log.debug("{} event: {}", logPrefix, event)
-        return event
+        def arity =  usernames.size();
+        if (arity == 0) {
+            Event event = new Event(this, "no_match")
+            log.debug("{} event: {}", logPrefix, event)
+            return event
+        } else if (arity == 1) {
+            accountLinkingUserContext.accountLinked = usernames.first()
+            Event event = new Event(this, "one_match")
+            log.debug("{} event: {}", logPrefix, event)
+            log.debug("{} with accountlinked uid: {}", logPrefix, usernames.first())
+            return event
+        } else {
+            LocalAttributeMap attrMap = new LocalAttributeMap("usernames", usernames)
+            Event event = new Event(this, "many_match", attrMap)
+            log.debug("{} event: {}", logPrefix, event)
+            return event
+        }
 
     }
 
