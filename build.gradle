@@ -1,0 +1,40 @@
+apply plugin: 'groovy'
+apply plugin: 'idea'
+apply plugin: 'java'
+
+repositories {
+    mavenCentral()
+    maven { url 'https://build.shibboleth.net/nexus/content/groups/public' }
+    maven { url 'https://repo1.maven.org/maven2/' }
+}
+
+dependencies {
+    implementation "org.codehaus.groovy:groovy-all:${project.'groovy.version'}"
+    implementation "javax.servlet:javax.servlet-api:${project.'javax-servlet.version'}"
+    implementation "net.shibboleth.idp:idp-authn-api:${project.'shibboleth.version'}"
+    implementation "net.shibboleth.idp:idp-authn-impl:${project.'shibboleth.version'}"
+    implementation "net.shibboleth.idp:idp-session-api:${project.'shibboleth.version'}"
+    implementation "net.shibboleth.idp:idp-profile-impl:${project.'shibboleth.version'}"
+    implementation "net.shibboleth.idp:idp-attribute-api:${project.'shibboleth.version'}"
+    implementation "net.shibboleth.idp:idp-attribute-resolver-api:${project.'shibboleth.version'}"
+    implementation "net.shibboleth.idp:idp-attribute-resolver-spring:${project.'shibboleth.version'}"
+    implementation "net.shibboleth.idp:idp-profile-api:${project.'shibboleth.version'}"
+    implementation "org.opensaml:opensaml-profile-api:${project.'opensaml.version'}"
+    implementation "org.springframework:spring-context:${project.'spring.version'}"
+    implementation "org.springframework:spring-web:${project.'spring.version'}"
+    implementation "org.springframework.webflow:spring-webflow:${project.'spring-webflow.version'}"
+    implementation "org.slf4j:slf4j-api:${project.'slf4j.version'}"
+    implementation "ch.qos.logback:logback-classic:${project.'logback.version'}"
+
+
+    testImplementation group: 'junit', name: 'junit', version: "${project.'junit.version'}"
+    testImplementation group: 'org.mockito', name: 'mockito-core', version: "${project.'mockito.version'}"
+    testImplementation group: 'org.powermock', name: 'powermock-core', version: "${project.'powermock.version'}"
+    testImplementation group: 'org.powermock', name: 'powermock-api-mockito2', version: "${project.'powermock.version'}"
+    testImplementation group: 'org.powermock', name: 'powermock-module-junit4', version: "${project.'powermock.version'}"
+}
+
+jar {
+    archiveBaseName = 'unimore-accountlinking'
+    archiveVersion =  '0.1.0'
+}
