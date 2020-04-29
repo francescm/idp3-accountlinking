@@ -122,7 +122,7 @@ public class InitializeAccountLinking extends AbstractExtractionAction {
                 accountLinkingUserContext.spid_email = attrsMap["spid_email"]
             }
             if (attrsMap["spid_gn"]) {
-                accountLinkingUserContext.gn = attrsMap["spid_gn"]
+                accountLinkingUserContext.spid_gn = attrsMap["spid_gn"]
             }
             if (attrsMap["spid_sn"]) {
                 accountLinkingUserContext.spid_sn = attrsMap["spid_sn"]

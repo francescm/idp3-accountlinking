@@ -90,16 +90,37 @@ class ValidateChoosenUid extends AbstractValidationAction {
         log.debug("{} subject was: {}", logPrefix, subject)
         log.debug("{} principals were: {}", logPrefix, subject.principals)
 
-        IdPAttribute attr = new IdPAttribute("accountlinkingTaxpayer")
-        attr.setValues([new StringAttributeValue(accountLinkingUserContext.taxpayerNumber)])
-        IdPAttributePrincipal taxpayerIdPAttributePrincipal = new IdPAttributePrincipal(attr)
 
         UsernamePrincipal usernamePrincipal =
                 new UsernamePrincipal(accountLinkingUserContext.accountLinked)
         Subject newSubject = new Subject()
         log.debug("{} about to add: {}", logPrefix, usernamePrincipal)
         newSubject.getPrincipals().add(usernamePrincipal)
+
+        IdPAttribute taxpayernumber = new IdPAttribute("accountlinkingTaxpayer")
+        taxpayernumber.setValues([new StringAttributeValue(accountLinkingUserContext.taxpayerNumber)])
+        IdPAttributePrincipal taxpayerIdPAttributePrincipal = new IdPAttributePrincipal(taxpayernumber)
         newSubject.getPrincipals().add(taxpayerIdPAttributePrincipal)
+
+        if (accountLinkingUserContext.spid_email) {
+            IdPAttribute attr = new IdPAttribute("spid_email")
+            attr.setValues(accountLinkingUserContext.spid_email)
+            IdPAttributePrincipal IdPAttributePrincipal = new IdPAttributePrincipal(attr)
+            newSubject.getPrincipals().add(IdPAttributePrincipal)
+        }
+        if (accountLinkingUserContext.spid_sn) {
+            IdPAttribute attr = new IdPAttribute("spid_sn")
+            attr.setValues(accountLinkingUserContext.spid_sn)
+            IdPAttributePrincipal IdPAttributePrincipal = new IdPAttributePrincipal(attr)
+            newSubject.getPrincipals().add(IdPAttributePrincipal)
+        }
+        if (accountLinkingUserContext.spid_gn) {
+            IdPAttribute attr = new IdPAttribute("spid_gn")
+            attr.setValues(accountLinkingUserContext.spid_gn)
+            IdPAttributePrincipal IdPAttributePrincipal = new IdPAttributePrincipal(attr)
+            newSubject.getPrincipals().add(IdPAttributePrincipal)
+        }
+
         log.debug("{} principals are now: {}", logPrefix, newSubject.getPrincipals())
         return newSubject
     }
