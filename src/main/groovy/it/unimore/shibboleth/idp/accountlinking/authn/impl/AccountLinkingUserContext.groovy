@@ -27,7 +27,10 @@ class AccountLinkingUserContext extends BaseContext {
     def taxpayerNumber
     def accountLinked
     def initialized = false
-
+    def sid_sn
+    def spid_gn
+    def spid_email
+    def code
 
     /**
      * Get current error and display it to the user.

@@ -15,6 +15,7 @@
         <!-- Given a CF search Directory for matching uids -->
         <!-- borrowed from AttributePostLoginC14NConfiguration -->
         <evaluate expression="ResolveAttributes" />
+        <!-- initializeAccountLinking gets uid from ResolveAttributes -->
         <evaluate expression="initializeAccountLinking" />
         <evaluate expression="'proceed'"/>
         <transition on="proceed" to="branchToALinkingStrategy"/>
@@ -25,7 +26,7 @@
     <action-state id="branchToALinkingStrategy">
         <evaluate expression="validateUsernamesArity"/>
         <transition on="no_match" to="proceed"/>
-        <transition on="one_match" to="proceed"/>
+        <transition on="one_match" to="validateChoosenUid"/>
         <transition on="many_match" to="displayUidForm"/>
     </action-state>
 
@@ -57,12 +58,12 @@
         <evaluate expression="validateChoosenUid" />
         <!-- Proceed on successful authentication -->
         <evaluate expression="'proceed'"/>
-        <!-- Show uid form page on non-true validation result -->
         <transition on="AccountError" to="displayUidForm"/>
         <transition on="InvalidCredentials" to="displayUidForm"/>
         <transition on="NoCredentials" to="displayUidForm" />
         <transition on="proceed" to="proceed" />
     </action-state>
+
 
     <bean-import resource="accountlinking-beans.xml" />
 

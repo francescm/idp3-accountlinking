@@ -126,16 +126,16 @@ class InitializeAccountLinkingTest {
                 getSubcontext("net.shibboleth.idp.authn.context.SubjectCanonicalizationContext")).
                 thenReturn(subjectCanonicalizationContext)
 
-        def aList = new ArrayList()
-        aList.add("a element")
 
+        def aList = new ArrayList()
+                aList.add("a element")
         when(profileRequestContext.iterator()).
                 thenReturn(aList.iterator())
 
         initAccountLinking.doExecute(profileRequestContext, authenticationContext)
 
-        assertEquals(accountLinkingUserContext.usernames, usernames_to_validate )
-        assertEquals(accountLinkingUserContext.taxpayerNumber, cf)
+        assertEquals(usernames_to_validate, accountLinkingUserContext.usernames)
+        assertEquals(cf, accountLinkingUserContext.taxpayerNumber)
     }
 
 

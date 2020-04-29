@@ -21,20 +21,14 @@ import groovy.util.logging.Slf4j
 import it.unimore.shibboleth.idp.accountlinking.authn.impl.AccountLinkingUserContext
 import net.shibboleth.idp.authn.AbstractExtractionAction
 import net.shibboleth.idp.authn.context.AuthenticationContext
-import net.shibboleth.idp.authn.principal.UsernamePrincipal
 
 import net.shibboleth.idp.attribute.context.AttributeContext
+import net.shibboleth.idp.authn.principal.IdPAttributePrincipal
 
-import net.shibboleth.idp.authn.context.ExternalAuthenticationContext
 import net.shibboleth.idp.authn.context.SubjectCanonicalizationContext
 
-import net.shibboleth.idp.authn.AuthenticationResult
 import org.opensaml.profile.context.ProfileRequestContext
-import net.shibboleth.idp.authn.context.UsernamePasswordContext
 import net.shibboleth.utilities.java.support.annotation.constraint.NotEmpty
-import org.springframework.beans.factory.annotation.Value
-import javax.security.auth.Subject
-import java.security.Principal
 
 import javax.annotation.Nonnull
 
@@ -63,28 +57,34 @@ public class InitializeAccountLinking extends AbstractExtractionAction {
         def subContext = profileRequestContext.iterator().next()
         log.debug("{} profileRequestContext subContext: {}", logPrefix, subContext)
 
-        /*
-        def attrs = attributeContext.getUnfilteredIdPAttributes()
-        log.debug("{} attributeContext attrs: {}", logPrefix, attrs)
-        def attr_uids = attrs["uid"]
-        log.debug("{} attributeContext uids: {}", attr_uids, attrs)
-        */
-
         SubjectCanonicalizationContext subjectCanonicalizationContext =
                 profileRequestContext.getSubcontext("net.shibboleth.idp.authn.context.SubjectCanonicalizationContext")
         log.debug("{} subject c14n context: {}", logPrefix, subjectCanonicalizationContext)
 
+        def uid_attrs = []
         AttributeContext attributeContext = subjectCanonicalizationContext.getSubcontext(AttributeContext.class)
         log.debug("{} alleged attributeContext: {}", logPrefix, attributeContext)
 
-        def uid_attrs = attributeContext.getIdPAttributes().get("uid")
-        log.debug("{} alleged uids: {}", logPrefix, uid_attrs)
-
-        def uids = []
-        attributeContext.getIdPAttributes().get("uid").getValues().each { uids << it.getValue() }
+        if (attributeContext) {
+            uid_attrs = attributeContext.getIdPAttributes().get("uid")
+        }
 
         def principalName = null
         def subject = subjectCanonicalizationContext.getSubject()
+        log.debug("{} subject: {}", logPrefix, subject)
+        subject.getPrincipals().each {princ ->
+            log.debug("{} princ: {}", logPrefix, princ)
+        }
+
+        def attrsMap = [:]
+
+        def idpAttrs = subject.getPrincipals(net.shibboleth.idp.authn.principal.IdPAttributePrincipal.class)
+        idpAttrs.each {attr ->
+            log.debug("{} IdP attr: {}", logPrefix, attr)
+            attrsMap.put(attr.getName(), attr.getAttribute().getValues() )
+        }
+        log.debug("{} attrmap: {}", logPrefix, attrsMap)
+
         def princs = subject.getPrincipals(net.shibboleth.idp.authn.principal.UsernamePrincipal.class)
         if (princs.size() == 1) {
             principalName = princs.iterator().next().getName()
@@ -102,13 +102,32 @@ public class InitializeAccountLinking extends AbstractExtractionAction {
         taxpayerNumber = principals.toArray().first().getName()
 */
         try {
-            log.debug("{} uids found: {}", logPrefix, uids)
+            log.debug("{} uids found: {}", logPrefix, uid_attrs)
             accountLinkingUserContext = authenticationContext.getSubcontext(AccountLinkingUserContext.class, true)
-            if (!accountLinkingUserContext.initialized) {
-                accountLinkingUserContext.usernames = uids
-                accountLinkingUserContext.taxpayerNumber = taxpayerNumber
+            log.debug("{} accountlinkingUserContext: {}", logPrefix, accountLinkingUserContext)
+            if (! accountLinkingUserContext.initialized) {
                 accountLinkingUserContext.initialized = true
             }
+
+            accountLinkingUserContext.taxpayerNumber = taxpayerNumber
+
+            if (! accountLinkingUserContext.usernames ) {
+                if ( uid_attrs  == [] ) {
+                    accountLinkingUserContext.usernames = []
+                } else {
+                    accountLinkingUserContext.usernames = uid_attrs.getValues().collect { it.getValue() }
+                }
+            }
+            if (attrsMap["spid_email"]) {
+                accountLinkingUserContext.spid_email = attrsMap["spid_email"]
+            }
+            if (attrsMap["spid_gn"]) {
+                accountLinkingUserContext.gn = attrsMap["spid_gn"]
+            }
+            if (attrsMap["spid_sn"]) {
+                accountLinkingUserContext.spid_sn = attrsMap["spid_sn"]
+            }
+
 
         } catch (Exception e) {
             log.warn("${logPrefix} Error in doExecute", e)
