@@ -26,9 +26,8 @@
         <header>
             <img src="$request.getContextPath()#springMessage("idp.logo")"
                  alt="#springMessageText("idp.logo.alt-text", "logo")">
-            <h3>#springMessageText("idp.title", "Web Login Service") -
-                #springMessageText("idp.accountlinking.chooseUsername", "Scegli la username per") - ${taxpayerNumber}
-            </h3>
+            <h2>#springMessageText("idp.title", "Web Login Service")</h2>
+                <h3>#springMessageText("idp.accountlinking.chooseUsername", "Scegli la username per") ${taxpayerNumber}</h3>
         </header>
         <div class="content">
             <div class="content">
@@ -46,9 +45,9 @@
 
                         <div class="form-element-wrapper">
                             <select name="j_account_linked">
+                                <option value="invalid"> scegli la username</option>
                                 #foreach( $username in $usernames )
                                     <option value="$username">$username</option>
-                                    <li>$product</li>
                                 #end
                             </select>
                         </div>

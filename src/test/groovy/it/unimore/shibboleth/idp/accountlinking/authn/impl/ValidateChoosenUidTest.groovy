@@ -23,23 +23,14 @@ import net.shibboleth.idp.authn.context.AuthenticationContext
 import net.shibboleth.idp.authn.context.SubjectCanonicalizationContext
 
 
-import net.shibboleth.idp.authn.context.AuthenticationErrorContext
 import net.shibboleth.idp.authn.principal.IdPAttributePrincipal
 import net.shibboleth.idp.authn.principal.UsernamePrincipal
 import org.opensaml.profile.context.ProfileRequestContext
-import net.shibboleth.idp.authn.context.SubjectContext
 
 import net.shibboleth.idp.authn.AuthenticationFlowDescriptor
 
-
-import org.springframework.webflow.core.collection.LocalAttributeMap
-
-import org.springframework.webflow.execution.Event
-
 import static org.junit.Assert.assertEquals
-import static org.junit.Assert.assertFalse
 import static org.junit.Assert.assertNull
-import static org.junit.Assert.assertTrue
 import static org.mockito.Mockito.when
 
 
@@ -48,7 +39,7 @@ import org.junit.runner.RunWith
 
 import org.junit.Before
 
-import org.mockito.Mockito
+//import org.mockito.Mockito
 
 import org.powermock.api.mockito.PowerMockito
 import org.powermock.core.classloader.annotations.PowerMockIgnore
@@ -92,6 +83,13 @@ class ValidateChoosenUidTest {
         when(authenticationContext.getAttemptedFlow())
                 .thenReturn(authenticationFlowDescriptor)
 
+        when(authenticationContext.isResultCacheable())
+                .thenReturn(false)
+
+        when(authenticationContext.getParent())
+                .thenReturn(profileRequestContext)
+
+
         ValidateChoosenUid validateChoosenUid = new ValidateChoosenUid()
         validateChoosenUid.doExecute(profileRequestContext, authenticationContext)
 
@@ -100,6 +98,7 @@ class ValidateChoosenUidTest {
 
         Subject result = new Subject()
         result.getPrincipals().add(new UsernamePrincipal(choosenUsername))
+
 
         IdPAttribute attr = new IdPAttribute("accountlinkingTaxpayer")
         attr.setValues([new StringAttributeValue(accountLinkingUserContext.taxpayerNumber)])

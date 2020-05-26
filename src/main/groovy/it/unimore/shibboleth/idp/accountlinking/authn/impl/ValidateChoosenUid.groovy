@@ -67,12 +67,14 @@ class ValidateChoosenUid extends AbstractValidationAction {
 
         if ( usernames.contains(accountLinked) ) {
             log.info("{} account linking successful for {}", logPrefix, accountLinked)
+            log.info("{} authenticationContext: {}", logPrefix, authenticationContext)
+            log.info("{} profileRequestContext: {}", logPrefix, profileRequestContext)
             buildAuthenticationResult(profileRequestContext, authenticationContext)
 
             SubjectContext subjectContext =
                     profileRequestContext.getSubcontext(SubjectContext.class, true)
-            SubjectCanonicalizationContext subjectCanonicalizationContext =
-                    profileRequestContext.getSubcontext(SubjectCanonicalizationContext.class, true)
+            //SubjectCanonicalizationContext subjectCanonicalizationContext =
+            //        profileRequestContext.getSubcontext(SubjectCanonicalizationContext.class, true)
 
             log.debug("{} authenticationContext authenticationResults: {}", logPrefix,
                     authenticationContext.getAuthenticationResult())

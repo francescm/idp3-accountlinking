@@ -23,9 +23,11 @@ import net.shibboleth.idp.authn.AbstractExtractionAction
 import net.shibboleth.idp.authn.context.AuthenticationContext
 
 import net.shibboleth.idp.attribute.context.AttributeContext
-import net.shibboleth.idp.authn.principal.IdPAttributePrincipal
+import net.shibboleth.idp.attribute.StringAttributeValue
+import net.shibboleth.idp.attribute.IdPAttribute
 
 import net.shibboleth.idp.authn.context.SubjectCanonicalizationContext
+import net.shibboleth.idp.authn.principal.IdPAttributePrincipal
 
 import org.opensaml.profile.context.ProfileRequestContext
 import net.shibboleth.utilities.java.support.annotation.constraint.NotEmpty
@@ -71,13 +73,15 @@ public class InitializeAccountLinking extends AbstractExtractionAction {
 
         def principalName = null
         def subject = subjectCanonicalizationContext.getSubject()
+
+        // just for log
         log.debug("{} subject: {}", logPrefix, subject)
         subject.getPrincipals().each {princ ->
             log.debug("{} princ: {}", logPrefix, princ)
         }
 
+        // copies IdPAttributePrincipals (many) in a map
         def attrsMap = [:]
-
         def idpAttrs = subject.getPrincipals(net.shibboleth.idp.authn.principal.IdPAttributePrincipal.class)
         idpAttrs.each {attr ->
             log.debug("{} IdP attr: {}", logPrefix, attr)
@@ -85,6 +89,7 @@ public class InitializeAccountLinking extends AbstractExtractionAction {
         }
         log.debug("{} attrmap: {}", logPrefix, attrsMap)
 
+        // sets principalName (a string)
         def princs = subject.getPrincipals(net.shibboleth.idp.authn.principal.UsernamePrincipal.class)
         if (princs.size() == 1) {
             principalName = princs.iterator().next().getName()
@@ -111,8 +116,16 @@ public class InitializeAccountLinking extends AbstractExtractionAction {
 
             accountLinkingUserContext.taxpayerNumber = taxpayerNumber
 
+            IdPAttribute spid_taxpayer = new IdPAttribute("spid_taxpayer")
+            spid_taxpayer.setValues([new StringAttributeValue(taxpayerNumber)])
+            accountLinkingUserContext.spid_taxpayer = spid_taxpayer
+
             if (! accountLinkingUserContext.usernames ) {
-                if ( uid_attrs  == [] ) {
+                if ( ( ! uid_attrs ) || ( uid_attrs == []) ) {
+                    IdPAttribute taxpayernumber = new IdPAttribute("accountlinkingTaxpayer")
+                    taxpayernumber.setValues([new StringAttributeValue(accountLinkingUserContext.taxpayerNumber)])
+                    IdPAttributePrincipal taxpayerIdPAttributePrincipal = new IdPAttributePrincipal(taxpayernumber)
+                    subject.getPrincipals().add(taxpayerIdPAttributePrincipal)
                     accountLinkingUserContext.usernames = []
                 } else {
                     accountLinkingUserContext.usernames = uid_attrs.getValues().collect { it.getValue() }

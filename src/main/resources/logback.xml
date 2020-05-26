@@ -18,5 +18,10 @@
         <appender-ref ref="FILE" />
     </logger>
 
+    <logger name="net.shibboleth.idp.authn" additivity="true">
+        <level value="DEBUG"/>
+        <appender-ref ref="FILE" />
+    </logger>
+
 
 </configuration>
