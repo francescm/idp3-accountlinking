@@ -19,6 +19,7 @@
     <meta charset="utf-8">
     <title>#springMessageText("idp.userprefs.title", "Web Login Service") - #springMessageText("idp.userprefs.title.suffix", "Login Preferences")</title>
     <link rel="stylesheet" type="text/css" href="$request.getContextPath()/css/main.css">
+    <link rel="stylesheet" type="text/css" href="$request.getContextPath()/css/override.css">
 </head>
 <body>
 <div class="wrapper">
