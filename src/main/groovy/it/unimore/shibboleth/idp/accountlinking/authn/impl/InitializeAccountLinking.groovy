@@ -89,6 +89,16 @@ public class InitializeAccountLinking extends AbstractExtractionAction {
         }
         log.debug("{} attrmap: {}", logPrefix, attrsMap)
 
+        // copies AuthnContextClassRefPrincipal (many) in a list
+        def authnClassRefPrincList = []
+        def authnCtxClassRefPrincs = subject.getPrincipals(net.shibboleth.idp.saml.authn.principal.AuthnContextClassRefPrincipal.class)
+        authnCtxClassRefPrincs.each {princ ->
+            log.debug("{} authnCtxRefPrinc: {}", logPrefix, princ)
+            authnClassRefPrincList.add(princ.getName())
+        }
+        log.debug("{} authnClassRefPrincList: {}", logPrefix, authnClassRefPrincList)
+
+
         // sets principalName (a string)
         def princs = subject.getPrincipals(net.shibboleth.idp.authn.principal.UsernamePrincipal.class)
         if (princs.size() == 1) {
@@ -140,7 +150,7 @@ public class InitializeAccountLinking extends AbstractExtractionAction {
             if (attrsMap["spid_sn"]) {
                 accountLinkingUserContext.spid_sn = attrsMap["spid_sn"]
             }
-
+            accountLinkingUserContext.authnContextClassRefPrincipals = authnClassRefPrincList
 
         } catch (Exception e) {
             log.warn("${logPrefix} Error in doExecute", e)

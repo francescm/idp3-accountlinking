@@ -32,6 +32,8 @@ class AccountLinkingUserContext extends BaseContext {
     def spid_gn
     def spid_email
     def spid_code
+    def authnContextClassRefPrincipals = []
+    def authenticationMethodPrincipals = []
 
     /**
      * Get current error and display it to the user.

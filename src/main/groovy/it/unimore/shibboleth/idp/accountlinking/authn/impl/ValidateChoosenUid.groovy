@@ -30,6 +30,7 @@ import org.opensaml.profile.context.ProfileRequestContext
 import net.shibboleth.utilities.java.support.annotation.constraint.NotEmpty
 import net.shibboleth.idp.authn.principal.UsernamePrincipal
 import net.shibboleth.idp.authn.principal.IdPAttributePrincipal
+import net.shibboleth.idp.saml.authn.principal.AuthnContextClassRefPrincipal
 
 import net.shibboleth.idp.attribute.IdPAttribute
 import net.shibboleth.idp.attribute.StringAttributeValue
@@ -73,11 +74,16 @@ class ValidateChoosenUid extends AbstractValidationAction {
 
             SubjectContext subjectContext =
                     profileRequestContext.getSubcontext(SubjectContext.class, true)
-            //SubjectCanonicalizationContext subjectCanonicalizationContext =
-            //        profileRequestContext.getSubcontext(SubjectCanonicalizationContext.class, true)
+            SubjectCanonicalizationContext subjectC14nContext =
+                    profileRequestContext.getSubcontext(SubjectCanonicalizationContext.class, true)
 
+            log.debug("{} subjectContext's subjects: {}", logPrefix,
+                    subjectContext.getSubjects())
+            log.debug("{} subjectC14nContext's subject: {}", logPrefix,
+                    subjectC14nContext.getSubject())
             log.debug("{} authenticationContext authenticationResults: {}", logPrefix,
                     authenticationContext.getAuthenticationResult())
+            subjectC14nContext.setPrincipalName(accountLinkingUserContext.accountLinked)
             subjectContext.setPrincipalName(accountLinkingUserContext.accountLinked)
         } else {
             log.warn("{} candidate {} not among allowed usernames {}", logPrefix, accountLinked, usernames)
@@ -95,36 +101,46 @@ class ValidateChoosenUid extends AbstractValidationAction {
 
         UsernamePrincipal usernamePrincipal =
                 new UsernamePrincipal(accountLinkingUserContext.accountLinked)
-        Subject newSubject = new Subject()
+        subject.getPrincipals().clear()
+        log.debug("{} subject after clear: {}", logPrefix, subject)
+
         log.debug("{} about to add: {}", logPrefix, usernamePrincipal)
-        newSubject.getPrincipals().add(usernamePrincipal)
+        subject.getPrincipals().add(usernamePrincipal)
+
 
         IdPAttribute taxpayernumber = new IdPAttribute("accountlinkingTaxpayer")
         taxpayernumber.setValues([new StringAttributeValue(accountLinkingUserContext.taxpayerNumber)])
         IdPAttributePrincipal taxpayerIdPAttributePrincipal = new IdPAttributePrincipal(taxpayernumber)
-        newSubject.getPrincipals().add(taxpayerIdPAttributePrincipal)
+        subject.getPrincipals().add(taxpayerIdPAttributePrincipal)
 
         if (accountLinkingUserContext.spid_email) {
             IdPAttribute attr = new IdPAttribute("spid_email")
             attr.setValues(accountLinkingUserContext.spid_email)
             IdPAttributePrincipal IdPAttributePrincipal = new IdPAttributePrincipal(attr)
-            newSubject.getPrincipals().add(IdPAttributePrincipal)
+            subject.getPrincipals().add(IdPAttributePrincipal)
         }
         if (accountLinkingUserContext.spid_sn) {
             IdPAttribute attr = new IdPAttribute("spid_sn")
             attr.setValues(accountLinkingUserContext.spid_sn)
             IdPAttributePrincipal IdPAttributePrincipal = new IdPAttributePrincipal(attr)
-            newSubject.getPrincipals().add(IdPAttributePrincipal)
+            subject.getPrincipals().add(IdPAttributePrincipal)
         }
         if (accountLinkingUserContext.spid_gn) {
             IdPAttribute attr = new IdPAttribute("spid_gn")
             attr.setValues(accountLinkingUserContext.spid_gn)
             IdPAttributePrincipal IdPAttributePrincipal = new IdPAttributePrincipal(attr)
-            newSubject.getPrincipals().add(IdPAttributePrincipal)
+            subject.getPrincipals().add(IdPAttributePrincipal)
+        }
+        accountLinkingUserContext.authnContextClassRefPrincipals.each { princ_name ->
+            log.debug("{} adding now princ: {}", logPrefix, princ_name)
+            AuthnContextClassRefPrincipal authCtxClassRefPrinc = new AuthnContextClassRefPrincipal(princ_name)
+            subject.getPrincipals().add(authCtxClassRefPrinc)
         }
 
-        log.debug("{} principals are now: {}", logPrefix, newSubject.getPrincipals())
-        return newSubject
+
+        log.debug("{} subject is now: {}", logPrefix, subject)
+        log.debug("{} principals are now: {}", logPrefix, subject.getPrincipals())
+        return subject
     }
 
 }
