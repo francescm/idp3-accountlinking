@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 Francesco Malvezzi <francesco.malvezzi@unimore.it>
+ * Copyright 2024 Francesco Malvezzi <francesco.malvezzi@unimore.it>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,16 +25,14 @@ import org.springframework.webflow.core.collection.LocalAttributeMap
 
 import org.springframework.webflow.execution.Event
 
-import static org.junit.Assert.assertEquals
-import static org.junit.Assert.assertFalse
-import static org.junit.Assert.assertTrue
+import org.junit.jupiter.api.DisplayName
+import org.junit.jupiter.api.Test
+
+import static org.junit.jupiter.api.Assertions.assertEquals
+
 import static org.mockito.Mockito.when
 
-
-import org.junit.Test
-import org.junit.runner.RunWith
-
-import org.junit.Before
+import org.junit.jupiter.api.BeforeEach
 
 import org.mockito.Mockito
 
@@ -42,7 +40,7 @@ import org.mockito.Mockito
 class ValidateUsernameArityTest {
 
 
-    @Before
+    @BeforeEach
     void setUp() {
         /*
 
@@ -73,6 +71,7 @@ class ValidateUsernameArityTest {
 
 
     @Test
+    @DisplayName("Username test with a single match")
     void testExecuteOneMatch()  {
 
         List<String> usernames = ['johndoe']

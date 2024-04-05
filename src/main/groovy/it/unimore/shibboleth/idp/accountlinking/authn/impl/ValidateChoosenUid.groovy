@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 Francesco Malvezzi <francesco.malvezzi@unimore.it>
+ * Copyright 2024 Francesco Malvezzi <francesco.malvezzi@unimore.it>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -87,6 +87,7 @@ class ValidateChoosenUid extends AbstractValidationAction {
             subjectContext.setPrincipalName(accountLinkingUserContext.accountLinked)
         } else {
             log.warn("{} candidate {} not among allowed usernames {}", logPrefix, accountLinked, usernames)
+            // handleError is a method of net.shibboleth.idp.authn.AbstractValidationAction
             handleError(profileRequestContext, authenticationContext, 'AccountError',
                     AuthnEventIds.ACCOUNT_ERROR)
         }

@@ -1,10 +1,8 @@
-> This project is work in progress
-
 # c14n flow for Italian taxpayer code
 
 ## Notes
 
-Based on shibboleth-idp-3.3.0
+Tested on shibboleth-idp-4.3.1
 
 ## Motivations
 
@@ -54,3 +52,12 @@ On the `beans` of the authentication flows that shall use this c14n flow, modify
         class="net.shibboleth.idp.authn.impl.PopulateSubjectCanonicalizationContext" scope="prototype"
         p:availableFlows-ref="shibboleth.AccountLinkingCanonicalizationFlows" />
 
+## How to compile
+
+    $ JAVA_HOME=/opt/homebrew/opt/openjdk ./gradlew build
+
+find the jar in `./builds/lib`.
+
+## Run a test
+
+    $ JAVA_HOME=/opt/homebrew/opt/openjdk ./gradlew test --tests InitializeAccountLinkingTest.testDoExecute

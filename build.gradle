@@ -6,15 +6,17 @@ repositories {
     mavenCentral()
     maven { url 'https://build.shibboleth.net/nexus/content/groups/public' }
     maven { url 'https://repo1.maven.org/maven2/' }
+    maven { url 'https://ox.gluu.org/maven/' }
 }
 
 dependencies {
-    implementation "org.codehaus.groovy:groovy-all:${project.'groovy.version'}"
+
+    implementation group: 'org.apache.groovy', name: 'groovy', version: "${project.'groovy.version'}"
     implementation "javax.servlet:javax.servlet-api:${project.'javax-servlet.version'}"
     implementation "net.shibboleth.idp:idp-authn-api:${project.'shibboleth.version'}"
-    implementation "net.shibboleth.idp:idp-authn-impl:${project.'shibboleth.version'}"
+    testImplementation group: 'net.shibboleth.idp', name: 'idp-authn-impl', version: "${project.'shibboleth.version'}"
     implementation "net.shibboleth.idp:idp-session-api:${project.'shibboleth.version'}"
-    implementation "net.shibboleth.idp:idp-profile-impl:${project.'shibboleth.version'}"
+    runtimeOnly group: 'net.shibboleth.idp', name: 'idp-profile-impl', version: "${project.'shibboleth.version'}"
     implementation "net.shibboleth.idp:idp-attribute-api:${project.'shibboleth.version'}"
     implementation "net.shibboleth.idp:idp-attribute-resolver-api:${project.'shibboleth.version'}"
     implementation "net.shibboleth.idp:idp-attribute-resolver-spring:${project.'shibboleth.version'}"
@@ -26,15 +28,24 @@ dependencies {
     implementation "org.slf4j:slf4j-api:${project.'slf4j.version'}"
     implementation "ch.qos.logback:logback-classic:${project.'logback.version'}"
 
+    testImplementation(platform("org.junit:junit-bom:${project.'junit.version'}"))
+    testImplementation('org.junit.jupiter:junit-jupiter')
+    testRuntimeOnly('org.junit.platform:junit-platform-launcher')
 
-    testImplementation group: 'junit', name: 'junit', version: "${project.'junit.version'}"
     testImplementation group: 'org.mockito', name: 'mockito-core', version: "${project.'mockito.version'}"
     testImplementation group: 'org.powermock', name: 'powermock-core', version: "${project.'powermock.version'}"
     testImplementation group: 'org.powermock', name: 'powermock-api-mockito2', version: "${project.'powermock.version'}"
-    testImplementation group: 'org.powermock', name: 'powermock-module-junit4', version: "${project.'powermock.version'}"
+//    testImplementation group: 'org.powermock', name: 'powermock-module-junit5', version: "${project.'powermock.version'}"
 }
 
 jar {
     archiveBaseName = 'unimore-accountlinking'
-    archiveVersion =  '0.1.1'
+    archiveVersion = "${project.version}"
+}
+
+test {
+    useJUnitPlatform()
+    testLogging {
+        events "passed", "skipped", "failed"
+    }
 }
