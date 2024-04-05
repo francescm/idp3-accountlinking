@@ -131,6 +131,14 @@ class ValidateChoosenUid extends AbstractValidationAction {
             IdPAttributePrincipal IdPAttributePrincipal = new IdPAttributePrincipal(attr)
             subject.getPrincipals().add(IdPAttributePrincipal)
         }
+        if (accountLinkingUserContext.spid_code) {
+            IdPAttribute attr = new IdPAttribute("spid_code")
+            attr.setValues(accountLinkingUserContext.spid_code)
+            IdPAttributePrincipal IdPAttributePrincipal = new IdPAttributePrincipal(attr)
+            subject.getPrincipals().add(IdPAttributePrincipal)
+        }
+        appPrincipal(subject, "spid_dateofbirth", accountLinkingUserContext.spid_dateofbirth)
+
         accountLinkingUserContext.authnContextClassRefPrincipals.each { princ_name ->
             log.debug("{} adding now princ: {}", logPrefix, princ_name)
             AuthnContextClassRefPrincipal authCtxClassRefPrinc = new AuthnContextClassRefPrincipal(princ_name)
@@ -141,6 +149,15 @@ class ValidateChoosenUid extends AbstractValidationAction {
         log.debug("{} subject is now: {}", logPrefix, subject)
         log.debug("{} principals are now: {}", logPrefix, subject.getPrincipals())
         return subject
+    }
+
+    private void appPrincipal(@NotEmpty Subject subject, principalName, principalValue) {
+        if (principalValue) {
+            IdPAttribute attr = new IdPAttribute(principalName)
+            attr.setValues(principalValue)
+            IdPAttributePrincipal IdPAttributePrincipal = new IdPAttributePrincipal(attr)
+            subject.getPrincipals().add(IdPAttributePrincipal)
+        }
     }
 
 }

@@ -32,6 +32,7 @@ class AccountLinkingUserContext extends BaseContext {
     def spid_gn
     def spid_email
     def spid_code
+    def spid_dateofbirth
     def authnContextClassRefPrincipals = []
     def authenticationMethodPrincipals = []
 
