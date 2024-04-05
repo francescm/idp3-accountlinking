@@ -1,10 +1,8 @@
-> This project is work in progress
-
 # c14n flow for Italian taxpayer code
 
 ## Notes
 
-Based on shibboleth-idp-3.3.0
+Tested on shibboleth-idp-4.3.1
 
 ## Motivations
 
