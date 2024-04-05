@@ -150,6 +150,12 @@ public class InitializeAccountLinking extends AbstractExtractionAction {
             if (attrsMap["spid_sn"]) {
                 accountLinkingUserContext.spid_sn = attrsMap["spid_sn"]
             }
+            if (attrsMap["spid_code"]) {
+                accountLinkingUserContext.spid_code = attrsMap["spid_code"]
+            }
+            if (attrsMap["spid_dateofbirth"]) {
+                accountLinkingUserContext.spid_dateofbirth = attrsMap["spid_dateofbirth"]
+            }
             accountLinkingUserContext.authnContextClassRefPrincipals = authnClassRefPrincList
 
         } catch (Exception e) {

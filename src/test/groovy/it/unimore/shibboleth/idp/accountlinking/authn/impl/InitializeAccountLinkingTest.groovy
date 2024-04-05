@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 Francesco Malvezzi <francesco.malvezzi@unimore.it>
+ * Copyright 2024 Francesco Malvezzi <francesco.malvezzi@unimore.it>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,10 +19,8 @@ package it.unimore.shibboleth.idp.accountlinking.authn.impl
 
 import org.opensaml.profile.context.ProfileRequestContext
 import net.shibboleth.idp.authn.context.AuthenticationContext
-import net.shibboleth.idp.authn.AuthenticationResult
 import net.shibboleth.idp.authn.principal.UsernamePrincipal
 import javax.security.auth.Subject
-import java.security.Principal
 import net.shibboleth.idp.authn.context.SubjectCanonicalizationContext
 import net.shibboleth.idp.attribute.context.AttributeContext
 
@@ -31,32 +29,27 @@ import net.shibboleth.idp.attribute.IdPAttribute
 
 import net.shibboleth.idp.attribute.StringAttributeValue
 
-import static org.junit.Assert.assertEquals
-import static org.junit.Assert.assertFalse
-import static org.junit.Assert.assertTrue
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.when
 
 import java.security.Principal
 
-import org.junit.Test
-import org.junit.runner.RunWith
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test
+//import org.junit.jupiter.runner.RunWith
 
-import org.junit.Before
-
-import org.mockito.Mockito
+import org.junit.jupiter.api.BeforeEach
 
 import org.powermock.api.mockito.PowerMockito
-import org.powermock.core.classloader.annotations.PrepareForTest
-import org.powermock.core.classloader.annotations.PowerMockIgnore
-import org.powermock.modules.junit4.PowerMockRunner
 
-@PowerMockIgnore(["javax.management.*", "com.sun.org.apache.xerces.*", "javax.xml.*", "org.xml.*", "org.w3c.dom.*", "com.sun.org.apache.xalan.*", "javax.activation.*"])
-@RunWith(PowerMockRunner.class)
-@PrepareForTest([ProfileRequestContext.class, AuthenticationContext.class])
+//@PowerMockIgnore(["javax.management.*", "com.sun.org.apache.xerces.*", "javax.xml.*", "org.xml.*", "org.w3c.dom.*", "com.sun.org.apache.xalan.*", "javax.activation.*"])
+//@RunWith(PowerMockRunner.class)
+//@PrepareForTest([ProfileRequestContext.class, AuthenticationContext.class])
+@DisplayName("AccountLinking test")
 class InitializeAccountLinkingTest {
 
 
-    @Before
+    @BeforeEach
     void setUp() {
         /*
 
