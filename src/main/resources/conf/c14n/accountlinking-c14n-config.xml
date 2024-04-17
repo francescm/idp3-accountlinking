@@ -30,7 +30,7 @@
     </util:list>
 
     <bean id="shibboleth.c14n.attribute.PrincipalNameLookupStrategy"
-          class="net.shibboleth.idp.profile.context.navigate.ScriptedContextLookupFunction"
+          class="net.shibboleth.profile.context.navigate.ScriptedContextLookupFunction"
           factory-method="inlineScript">
         <constructor-arg>
             <value>
