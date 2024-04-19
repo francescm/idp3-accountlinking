@@ -4,22 +4,22 @@ apply plugin: 'java'
 
 repositories {
     mavenCentral()
-    maven { url 'https://build.shibboleth.net/nexus/content/groups/public' }
     maven { url 'https://repo1.maven.org/maven2/' }
+    maven { url 'https://build.shibboleth.net/nexus/content/groups/public' }
+    maven { url 'https://repository.jboss.org/nexus/content/repositories/public/' }
     maven { url 'https://ox.gluu.org/maven/' }
 }
 
 dependencies {
 
     implementation group: 'org.apache.groovy', name: 'groovy', version: "${project.'groovy.version'}"
-    implementation "javax.servlet:javax.servlet-api:${project.'javax-servlet.version'}"
     implementation "net.shibboleth.idp:idp-authn-api:${project.'shibboleth.version'}"
-    testImplementation group: 'net.shibboleth.idp', name: 'idp-authn-impl', version: "${project.'shibboleth.version'}"
+    implementation group: 'net.shibboleth.idp', name: 'idp-authn-impl', version: "${project.'shibboleth.version'}"
     implementation "net.shibboleth.idp:idp-session-api:${project.'shibboleth.version'}"
     runtimeOnly group: 'net.shibboleth.idp', name: 'idp-profile-impl', version: "${project.'shibboleth.version'}"
-    implementation "net.shibboleth.idp:idp-attribute-api:${project.'shibboleth.version'}"
-    implementation "net.shibboleth.idp:idp-attribute-resolver-api:${project.'shibboleth.version'}"
-    implementation "net.shibboleth.idp:idp-attribute-resolver-spring:${project.'shibboleth.version'}"
+//    implementation "net.shibboleth.idp:idp-attribute-api:${project.'shibboleth.version'}"
+//    implementation "net.shibboleth.idp:idp-attribute-resolver-api:${project.'shibboleth.version'}"
+//    implementation "net.shibboleth.idp:idp-attribute-resolver-spring:${project.'shibboleth.version'}"
     implementation "net.shibboleth.idp:idp-profile-api:${project.'shibboleth.version'}"
     implementation "org.opensaml:opensaml-profile-api:${project.'opensaml.version'}"
     implementation "org.springframework:spring-context:${project.'spring.version'}"
@@ -27,6 +27,13 @@ dependencies {
     implementation "org.springframework.webflow:spring-webflow:${project.'spring-webflow.version'}"
     implementation "org.slf4j:slf4j-api:${project.'slf4j.version'}"
     implementation "ch.qos.logback:logback-classic:${project.'logback.version'}"
+
+    // https://mvnrepository.com/artifact/net.shibboleth.utilities/java-support
+    implementation 'net.shibboleth.utilities:java-support:8.0.0'
+
+    // https://mvnrepository.com/artifact/jakarta.servlet/jakarta.servlet-api
+    implementation group: 'jakarta.servlet', name: 'jakarta.servlet-api', version: "${project.'jakarta-servlet.version'}"
+
 
     testImplementation(platform("org.junit:junit-bom:${project.'junit.version'}"))
     testImplementation('org.junit.jupiter:junit-jupiter')

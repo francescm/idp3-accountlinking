@@ -61,3 +61,4 @@ find the jar in `./builds/lib`.
 ## Run a test
 
     $ JAVA_HOME=/opt/homebrew/opt/openjdk ./gradlew test --tests InitializeAccountLinkingTest.testDoExecute
+    $ JAVA_HOME=/usr/local/opt/openjdk@17 ./gradlew test --tests InitializeAccountLinkingTest.testDoExecute

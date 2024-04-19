@@ -60,7 +60,7 @@ class ValidateChoosenUid extends AbstractValidationAction {
                              @NotEmpty AuthenticationContext authenticationContext) {
 
 
-        accountLinkingUserContext = authenticationContext.getSubcontext(AccountLinkingUserContext.class, true)
+        accountLinkingUserContext = authenticationContext.ensureSubcontext(AccountLinkingUserContext.class)
         def usernames = accountLinkingUserContext.usernames
         log.debug("{} usernames: {}", logPrefix, usernames)
         def accountLinked = accountLinkingUserContext.accountLinked

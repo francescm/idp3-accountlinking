@@ -26,7 +26,7 @@ import net.shibboleth.utilities.java.support.primitive.StringSupport
 import org.opensaml.profile.context.ProfileRequestContext
 
 import javax.annotation.Nonnull
-import javax.servlet.http.HttpServletRequest
+import jakarta.servlet.http.HttpServletRequest
 
 import net.shibboleth.utilities.java.support.annotation.constraint.NotEmpty
 

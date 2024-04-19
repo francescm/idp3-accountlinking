@@ -75,8 +75,7 @@ class ValidateChoosenUidTest {
         AuthenticationContext authenticationContext = PowerMockito.mock(AuthenticationContext.class)
         ProfileRequestContext profileRequestContext = new ProfileRequestContext()
 
-        when(authenticationContext.getSubcontext(AccountLinkingUserContext.class,
-                true))
+        when(authenticationContext.ensureSubcontext(AccountLinkingUserContext.class))
                 .thenReturn(accountLinkingUserContext)
 
         when(authenticationContext.getAttemptedFlow())
@@ -123,12 +122,10 @@ class ValidateChoosenUidTest {
 
         ProfileRequestContext profileRequestContext = new ProfileRequestContext()
 
-        when(authenticationContext.getSubcontext(AccountLinkingUserContext.class,
-                true))
+        when(authenticationContext.ensureSubcontext(AccountLinkingUserContext.class))
                 .thenReturn(accountLinkingUserContext)
 
-        when(authenticationContext.getSubcontext(AuthenticationErrorContext.class,
-                true))
+        when(authenticationContext.ensureSubcontext(AuthenticationErrorContext.class))
                 .thenReturn(authErrCtx)
 
         when(authenticationContext.getAttemptedFlow())
