@@ -2,7 +2,7 @@
 
 ## Notes
 
-Tested on shibboleth-idp-4.3.1
+Tested on shibboleth-idp-5.1.3
 
 ## Motivations
 
@@ -52,6 +52,11 @@ On the `beans` of the authentication flows that shall use this c14n flow, modify
         class="net.shibboleth.idp.authn.impl.PopulateSubjectCanonicalizationContext" scope="prototype"
         p:availableFlows-ref="shibboleth.AccountLinkingCanonicalizationFlows" />
 
+The attribute-resolver.xml has to be able to resolve the usernames given a CF. 
+This flow uses the ```shibboleth.attributeResolver``` with a default resolutionLabel: 
+```c14n/accountlinking```. It is possible to create custom DataConnector with 
+custom Attributes to perform exactly this task.
+
 ## How to compile
 
     $ JAVA_HOME=/opt/homebrew/opt/openjdk ./gradlew build
@@ -60,5 +65,5 @@ find the jar in `./builds/lib`.
 
 ## Run a test
 
-    $ JAVA_HOME=/opt/homebrew/opt/openjdk ./gradlew test --tests InitializeAccountLinkingTest.testDoExecute
+    $ JAVA_HOME=/opt/homebrew/opt/openjdk@17 ./gradlew test --tests InitializeAccountLinkingTest.testDoExecute
     $ JAVA_HOME=/usr/local/opt/openjdk@17 ./gradlew test --tests InitializeAccountLinkingTest.testDoExecute
